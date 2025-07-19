@@ -16,7 +16,6 @@ def draw(output, loss):
     plt.pause(0.055)
 
 def train(epochs=1, learning_rate=0.01):
-    # global w1, w0
     '''
     epochs: 训练次数
     learning_rate: 学习率
@@ -51,6 +50,7 @@ w1 = torch.rand(1, requires_grad=True)
 w0 = torch.rand(1, requires_grad=True)
 
 w1, w0, loss = train(100000, learning_rate=1e-4)
+
 print(f"最终损失值：{loss.item()}")
 print(f"w1: {w1.item()}, w0: {w0.item()}")
 plt.show()
