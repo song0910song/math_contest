@@ -1,6 +1,10 @@
+'''
+直接根据y = w1*x + w0
+运用梯度下降算法计算w1, w0的值
+'''
+
 import torch
 import matplotlib.pyplot as plt
-
 
 def draw(output, loss):
     '''
