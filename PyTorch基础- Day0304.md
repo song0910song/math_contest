@@ -106,7 +106,7 @@ $$
 
 一般流程为：
 
-![](E:\cv_learn\线性回归一般步骤.jpg)
+![](\cv_learn\线性回归一般步骤.jpg)
 
 如果把$(w_1, w_0)$看作向量$\vec{w}$，则可以把式子再精简一点，变成向量形式：
 $$
@@ -179,5 +179,123 @@ print(f"权重w：{w.data}")
 plt.show()
 ```
 
-#### 使用**神经网络**进行线性回归
+#### 使用人工神经元进行线性回归
 
+神经网络的结构图：
+
+![](\cv_learn\神经网络模型.jpg)
+
+神经网络接受多个输入，不同的输入有不同的权重，通过**线性累加**和**激活函数**$\mathbf{f}$得到输出值
+
+在使用人工神经元进行线性回归时，可以省略激活函数，所以可以将模型简化为：
+$$
+{\LARGE y = x_0w_0 + x_1w_1 + \cdots + x_nw_n = \sum_{i=0}^{n}x_iw_i = \vec{x_i} \cdot \vec{w_i}}
+$$
+PyTorch内置了损失函数和优化函数，下面用神经网络将上面的代码再编写一遍：
+
+```python
+import torch
+import matplotlib.pyplot as plt
+from torch import nn, optim
+
+# 构造线性模型
+class LR(nn.Module):
+    def __init__(self):
+        super(LR, self).__init__()
+        self.linear = nn.Linear(1, 1)
+
+    def forward(self, x):
+        return self.linear(x)
+
+def draw(x, y, output, loss):
+    """Plot data and model prediction."""
+    plt.cla()
+    plt.scatter(x.numpy(), y.numpy())
+    plt.plot(x.numpy(), output.detach().numpy(), 'r-', lw=2)
+    plt.text(float(x.min()) + 0.5, float(y.min()),
+             f'loss={loss.item()}', fontdict={'size': 14, 'color': 'red'})
+    plt.draw()
+    plt.pause(0.05)
+
+def train(model, criterion, optimizer, x, y, epochs):
+    """Train the model."""
+    for epoch in range(epochs):
+        output = model(x)
+        loss = criterion(output, y)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        if epoch % 80 == 0:
+            draw(x, y, output, loss)
+    return model, loss
+
+def main():
+    x = torch.linspace(-3, 2, 1000).unsqueeze(1)
+    y = x + 1.2 * torch.rand(x.size())
+    model = LR()
+    criterion = nn.MSELoss() # 损失函数
+    optimizer = optim.SGD(model.parameters(), lr=1e-4) # 优化器
+    model, loss = train(model, criterion, optimizer, x, y, epochs=100000)
+    print(f"Final loss: {loss.item():.4f}")
+    print(f"w1: {model.linear.weight.item():.4f}, w0: {model.linear.bias.item():.4f}")
+    plt.show()
+
+if __name__ == "__main__":
+    main()
+
+```
+
+其中：
+
+```python
+class LR(nn.Module):
+    def __init__(self):
+        super(LR, self).__init__()
+        self.linear = nn.Linear(1, 1)
+
+    def forward(self, x):
+        return self.linear(x)
+```
+
+`nn.Linear(1, 1)`的含义是：
+
+- 输入特征数为 1（即每一行有 1 个特征）
+- 输出特征数为 1（即每一行输出 1 个值）
+
+`self.linear(x)`的含义为对**x**进行前向运算:
+$$
+{\LARGE out = \mathbf{X} \cdot x.weight.T + x.bias}
+$$
+
+
+nn模块中预设有均方误差函数`MSELoss()`:
+
+```python
+criterion = nn.MSELoss() # 损失函数
+```
+
+其数学表达式：
+$$
+{\LARGE L(x, y) = \frac{1}{n}(x_i-y_i)^2}
+$$
+使用PyTorch预设的随机梯度下降函数`SGD()`进行更新：
+
+```python
+optimizer = optim.SGD(model,paramenters(), learning_rate)
+```
+
+优化神经网络中的参数$\vec{w}$
+
+### 3、非线性回归
+
+在神经网络结构图中，我们使用**激活函数**来拟合非线性函数。
+
+#### 激活函数
+
+激活函数是一个非常简单的非线性函数，只要多个激活函数叠加在一起，就可以拟合出复杂的非线性函数，常用的激活函数有sigmoid、tanh、ReLU和Maxout等。
+
+所以，整个人工神经元的数据计算过程如下：
+$$
+y = f(\vec{x} \cdot \vec{w})
+$$
+![](E:\cv_learn\神经网络2.jpg)
