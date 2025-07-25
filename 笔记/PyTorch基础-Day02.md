@@ -8,11 +8,11 @@
 
 - 简单的计算可以把计算抽象为图像
 
-  ![](E:\cv_learn\autograd.jpg)
+  ![](E:\cv_learn\img\autograd.jpg)
 
   - 复杂计算图
 
-    <img src="E:\cv_learn\2.jpg" alt="2" style="zoom:50%;" />
+    <img src="E:\cv_learn\img\2.jpg" alt="2" style="zoom:50%;" />
 
     一张复杂的图可以分为4部分：**叶子节点、中间节点、输出节点和信息流**
 

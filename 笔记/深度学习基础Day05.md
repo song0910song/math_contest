@@ -94,7 +94,7 @@ criterion = nn.CrossEntropyLoss()  # 包含Softmax的损失函数
 
 多元分类模型图
 
-![多元分类模型图](E:\cv_learn\多元分类图.jpg)
+![多元分类模型图](E:\cv_learn\img\多元分类图.jpg)
 
 #### 2、交叉熵损失(Log Loss)
 
